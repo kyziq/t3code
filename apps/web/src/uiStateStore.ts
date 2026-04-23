@@ -556,6 +556,14 @@ export function setProjectExpanded(state: UiState, projectId: string, expanded: 
   };
 }
 
+export function collapseAllProjects(state: UiState, projectIds: string[]): UiState {
+  const nextExpanded = { ...state.projectExpandedById };
+  for (const id of projectIds) {
+    nextExpanded[id] = false;
+  }
+  return { ...state, projectExpandedById: nextExpanded };
+}
+
 export function reorderProjects(
   state: UiState,
   draggedProjectIds: readonly string[],
@@ -608,6 +616,7 @@ interface UiStateStore extends UiState {
   setThreadChangedFilesExpanded: (threadId: string, turnId: string, expanded: boolean) => void;
   toggleProject: (projectId: string) => void;
   setProjectExpanded: (projectId: string, expanded: boolean) => void;
+  collapseAllProjects: (projectIds: string[]) => void;
   reorderProjects: (
     draggedProjectIds: readonly string[],
     targetProjectIds: readonly string[],
@@ -628,6 +637,7 @@ export const useUiStateStore = create<UiStateStore>((set) => ({
   toggleProject: (projectId) => set((state) => toggleProject(state, projectId)),
   setProjectExpanded: (projectId, expanded) =>
     set((state) => setProjectExpanded(state, projectId, expanded)),
+  collapseAllProjects: (projectIds) => set((state) => collapseAllProjects(state, projectIds)),
   reorderProjects: (draggedProjectIds, targetProjectIds) =>
     set((state) => reorderProjects(state, draggedProjectIds, targetProjectIds)),
 }));
