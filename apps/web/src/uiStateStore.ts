@@ -561,6 +561,9 @@ export function collapseAllProjects(state: UiState, projectIds: string[]): UiSta
   for (const id of projectIds) {
     nextExpanded[id] = false;
   }
+  if (recordsEqual(state.projectExpandedById, nextExpanded)) {
+    return state;
+  }
   return { ...state, projectExpandedById: nextExpanded };
 }
 

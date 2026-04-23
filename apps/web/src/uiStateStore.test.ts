@@ -393,6 +393,21 @@ describe("uiStateStore pure functions", () => {
     expect(next.projectExpandedById[project2]).toBe(true);
   });
 
+  it("collapseAllProjects is a no-op when all given projects already collapsed", () => {
+    const project1 = ProjectId.make("project-1");
+    const project2 = ProjectId.make("project-2");
+    const initialState = makeUiState({
+      projectExpandedById: {
+        [project1]: false,
+        [project2]: false,
+      },
+    });
+
+    const next = collapseAllProjects(initialState, [project1, project2]);
+
+    expect(next).toBe(initialState);
+  });
+
   it("clearThreadUi removes visit state for deleted threads", () => {
     const thread1 = ThreadId.make("thread-1");
     const initialState = makeUiState({
