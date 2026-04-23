@@ -2460,6 +2460,7 @@ interface SidebarProjectsContentProps {
   suppressProjectClickForContextMenuRef: React.RefObject<boolean>;
   attachProjectListAutoAnimateRef: (node: HTMLElement | null) => void;
   projectsLength: number;
+  allProjectsCollapsed: boolean;
   collapseAllProjects: () => void;
 }
 
@@ -2501,6 +2502,7 @@ const SidebarProjectsContent = memo(function SidebarProjectsContent(
     suppressProjectClickForContextMenuRef,
     attachProjectListAutoAnimateRef,
     projectsLength,
+    allProjectsCollapsed,
     collapseAllProjects,
   } = props;
 
@@ -2593,7 +2595,8 @@ const SidebarProjectsContent = memo(function SidebarProjectsContent(
                       type="button"
                       aria-label="Collapse all projects"
                       data-testid="sidebar-collapse-all-projects"
-                      className="inline-flex size-5 cursor-pointer items-center justify-center rounded-md text-muted-foreground/60 transition-colors hover:bg-accent hover:text-foreground"
+                      disabled={allProjectsCollapsed}
+                      className="inline-flex size-5 cursor-pointer items-center justify-center rounded-md text-muted-foreground/60 transition-colors hover:bg-accent hover:text-foreground disabled:cursor-not-allowed disabled:opacity-40"
                       onClick={collapseAllProjects}
                     />
                   }
@@ -2992,6 +2995,10 @@ export default function Sidebar() {
   const handleCollapseAllProjects = useCallback(() => {
     collapseAllProjectsAction(sortedProjects.map((p) => p.projectKey));
   }, [collapseAllProjectsAction, sortedProjects]);
+  const allProjectsCollapsed = useMemo(
+    () => sortedProjects.every((p) => (projectExpandedById[p.projectKey] ?? true) === false),
+    [sortedProjects, projectExpandedById],
+  );
   const visibleSidebarThreadKeys = useMemo(
     () =>
       sortedProjects.flatMap((project) => {
@@ -3376,6 +3383,7 @@ export default function Sidebar() {
             suppressProjectClickForContextMenuRef={suppressProjectClickForContextMenuRef}
             attachProjectListAutoAnimateRef={attachProjectListAutoAnimateRef}
             projectsLength={projects.length}
+            allProjectsCollapsed={allProjectsCollapsed}
             collapseAllProjects={handleCollapseAllProjects}
           />
 
